@@ -19,6 +19,11 @@ export function initDatadog(): void {
     version: import.meta.env.VITE_DD_VERSION ?? '0.1.0',
     sessionSampleRate: 100, // capture 100% of sessions
     sessionReplaySampleRate: 20, // capture 20% of sessions with replay
+    // Mask all text/inputs in Session Replay by default. This site renders
+    // diner names, item descriptions, and dollar amounts as DOM nodes; without
+    // masking they would be uploaded to Datadog verbatim. 'mask' redacts text
+    // and input content while preserving layout/interaction data.
+    defaultPrivacyLevel: 'mask',
     trackResources: true, // Enable Resource tracking
     trackUserInteractions: true, // Enable Action tracking
     trackLongTasks: true, // Enable Long Tasks tracking
