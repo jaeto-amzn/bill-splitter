@@ -87,6 +87,21 @@ export function ItemsEditor({
                   priceCents={item.priceCents}
                   onCommit={(cents) => onUpdate(item.id, { priceCents: cents })}
                 />
+                <button
+                  type="button"
+                  aria-label="Toggle alcohol"
+                  aria-pressed={!!item.isAlcohol}
+                  title={item.isAlcohol ? 'Alcohol (tap to remove)' : 'Mark as alcohol'}
+                  onClick={() => onUpdate(item.id, { isAlcohol: !item.isAlcohol })}
+                  className={cn(
+                    'rounded-full border px-2.5 py-1 text-sm transition-colors',
+                    item.isAlcohol
+                      ? 'bg-amber-100 border-amber-400 text-amber-800'
+                      : 'bg-background text-muted-foreground hover:bg-accent',
+                  )}
+                >
+                  🍺
+                </button>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -137,6 +152,7 @@ export function ItemsEditor({
                     <p className="text-muted-foreground text-xs tabular-nums">
                       {formatCents(perHead)} each · split {sharers.length} way
                       {sharers.length > 1 ? 's' : ''}
+                      {item.isAlcohol ? ' · 🍺 liquor tax applies' : ''}
                     </p>
                   ) : (
                     <p className="text-destructive text-xs">Unassigned — not counted yet</p>

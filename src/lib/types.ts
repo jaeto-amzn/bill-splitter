@@ -18,6 +18,8 @@ export interface Item {
   priceCents: number
   /** Diners sharing this item. Empty = unassigned (excluded from totals). */
   dinerIds: string[]
+  /** Whether this item is an alcoholic beverage subject to liquor tax. */
+  isAlcohol?: boolean
 }
 
 /** How the tip is entered. */
@@ -28,6 +30,8 @@ export interface BillState {
   items: Item[]
   /** Tax in integer cents (entered directly from the receipt). */
   taxCents: number
+  /** Liquor sales tax rate as a percentage applied to alcohol items only. */
+  liquorTaxPercent: number
   tipMode: TipMode
   /** Tip percentage (of pre-tax subtotal) when tipMode === 'percent'. */
   tipPercent: number
@@ -41,6 +45,7 @@ export interface DinerShare {
   name: string
   subtotalCents: number
   taxCents: number
+  liquorTaxCents: number
   tipCents: number
   totalCents: number
 }
@@ -49,6 +54,7 @@ export interface BillSummary {
   shares: DinerShare[]
   subtotalCents: number
   taxCents: number
+  liquorTaxCents: number
   tipCents: number
   grandTotalCents: number
   /** Cents belonging to items with no diner assigned. */

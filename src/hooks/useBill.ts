@@ -20,6 +20,7 @@ function defaultState(): BillState {
     ],
     items: [],
     taxCents: 0,
+    liquorTaxPercent: 10,
     tipMode: 'percent',
     tipPercent: 18,
     tipCents: 0,
@@ -38,6 +39,7 @@ function loadState(): BillState {
       diners: parsed.diners,
       items: parsed.items,
       taxCents: parsed.taxCents ?? 0,
+      liquorTaxPercent: parsed.liquorTaxPercent ?? 10,
       tipMode: parsed.tipMode ?? 'percent',
       tipPercent: parsed.tipPercent ?? 18,
       tipCents: parsed.tipCents ?? 0,
@@ -135,6 +137,10 @@ export function useBill() {
     setState((s) => ({ ...s, taxCents }))
   }, [])
 
+  const setLiquorTaxPercent = useCallback((liquorTaxPercent: number) => {
+    setState((s) => ({ ...s, liquorTaxPercent }))
+  }, [])
+
   const setTip = useCallback(
     (patch: Partial<Pick<BillState, 'tipMode' | 'tipPercent' | 'tipCents'>>) => {
       setState((s) => ({ ...s, ...patch }))
@@ -158,6 +164,7 @@ export function useBill() {
     toggleItemDiner,
     assignAll,
     setTax,
+    setLiquorTaxPercent,
     setTip,
     reset,
   }
