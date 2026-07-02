@@ -12,7 +12,8 @@ import { formatCents } from '@/lib/money'
 import type { BillSummary } from '@/lib/types'
 
 export function Summary({ summary }: { summary: BillSummary }) {
-  const { shares, subtotalCents, taxCents, tipCents, grandTotalCents, unassignedCents } = summary
+  const { shares, subtotalCents, taxCents, liquorTaxCents, tipCents, grandTotalCents, unassignedCents } = summary
+  const hasLiquorTax = liquorTaxCents > 0
 
   return (
     <Card>
@@ -26,6 +27,7 @@ export function Summary({ summary }: { summary: BillSummary }) {
               <TableHead>Diner</TableHead>
               <TableHead className="text-right">Items</TableHead>
               <TableHead className="text-right">Tax</TableHead>
+              {hasLiquorTax && <TableHead className="text-right">🍺 Tax</TableHead>}
               <TableHead className="text-right">Tip</TableHead>
               <TableHead className="text-right">Total</TableHead>
             </TableRow>
@@ -40,6 +42,11 @@ export function Summary({ summary }: { summary: BillSummary }) {
                 <TableCell className="text-muted-foreground text-right tabular-nums">
                   {formatCents(s.taxCents)}
                 </TableCell>
+                {hasLiquorTax && (
+                  <TableCell className="text-muted-foreground text-right tabular-nums">
+                    {s.liquorTaxCents > 0 ? formatCents(s.liquorTaxCents) : '—'}
+                  </TableCell>
+                )}
                 <TableCell className="text-muted-foreground text-right tabular-nums">
                   {formatCents(s.tipCents)}
                 </TableCell>
@@ -54,6 +61,7 @@ export function Summary({ summary }: { summary: BillSummary }) {
         <div className="flex flex-col gap-1 border-t pt-3 text-sm">
           <Row label="Subtotal" value={formatCents(subtotalCents)} />
           <Row label="Tax" value={formatCents(taxCents)} />
+          {hasLiquorTax && <Row label="🍺 Liquor tax" value={formatCents(liquorTaxCents)} />}
           <Row label="Tip" value={formatCents(tipCents)} />
           <Row label="Grand total" value={formatCents(grandTotalCents)} strong />
         </div>

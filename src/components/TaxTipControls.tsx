@@ -11,12 +11,13 @@ interface Props {
   state: BillState
   tipCents: number
   onSetTax: (cents: number) => void
+  onSetLiquorTaxPercent: (percent: number) => void
   onSetTip: (patch: Partial<Pick<BillState, 'tipMode' | 'tipPercent' | 'tipCents'>>) => void
 }
 
 const TIP_PRESETS = [15, 18, 20, 25]
 
-export function TaxTipControls({ state, tipCents, onSetTax, onSetTip }: Props) {
+export function TaxTipControls({ state, tipCents, onSetTax, onSetLiquorTaxPercent, onSetTip }: Props) {
   const [taxText, setTaxText] = useState<string | null>(null)
   const [tipText, setTipText] = useState<string | null>(null)
 
@@ -48,6 +49,29 @@ export function TaxTipControls({ state, tipCents, onSetTax, onSetTip }: Props) {
               }}
               className="pl-7 text-right tabular-nums"
             />
+          </div>
+        </div>
+
+        {/* Liquor tax */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium">🍺 Liquor tax rate</label>
+          <div className="flex items-center gap-2">
+            <div className="relative w-28">
+              <Input
+                inputMode="decimal"
+                placeholder="0"
+                value={state.liquorTaxPercent || ''}
+                onChange={(e) => {
+                  const v = Number.parseFloat(e.target.value.replace(/[^0-9.]/g, ''))
+                  onSetLiquorTaxPercent(Number.isFinite(v) ? v : 0)
+                }}
+                className="pr-7 text-right tabular-nums"
+              />
+              <span className="text-muted-foreground pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
+                %
+              </span>
+            </div>
+            <span className="text-muted-foreground text-xs">applied to 🍺 items only</span>
           </div>
         </div>
 

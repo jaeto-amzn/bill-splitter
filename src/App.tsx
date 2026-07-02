@@ -39,6 +39,7 @@ export default function App() {
             state={state}
             tipCents={summary.tipCents}
             onSetTax={bill.setTax}
+            onSetLiquorTaxPercent={bill.setLiquorTaxPercent}
             onSetTip={bill.setTip}
           />
         </div>
