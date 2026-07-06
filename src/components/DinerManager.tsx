@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Plus, X, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,6 +10,59 @@ interface Props {
   onAdd: (name?: string) => void
   onRename: (id: string, name: string) => void
   onRemove: (id: string) => void
+}
+
+function DinerChip({
+  diner,
+  onRename,
+  onRemove,
+}: {
+  diner: Diner
+  onRename: (id: string, name: string) => void
+  onRemove: (id: string) => void
+}) {
+  const [draft, setDraft] = useState<string | null>(null)
+  const cancelRef = useRef(false)
+
+  function commit() {
+    if (cancelRef.current) {
+      cancelRef.current = false
+      return
+    }
+    const trimmed = (draft ?? diner.name).trim()
+    onRename(diner.id, trimmed || diner.name)
+    setDraft(null)
+  }
+
+  return (
+    <div className="bg-muted/60 flex items-center gap-1 rounded-md border pl-2">
+      <Input
+        aria-label="Diner name"
+        value={draft ?? diner.name}
+        onFocus={() => setDraft(diner.name)}
+        onChange={(e) => setDraft(e.target.value)}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') e.currentTarget.blur()
+          if (e.key === 'Escape') {
+            cancelRef.current = true
+            setDraft(null)
+            e.currentTarget.blur()
+          }
+        }}
+        className="h-8 w-32 border-0 bg-transparent px-1 shadow-none focus-visible:ring-0"
+      />
+      <Button
+        variant="ghost"
+        size="icon"
+        className="size-7 text-muted-foreground hover:text-destructive"
+        aria-label={`Remove ${diner.name}`}
+        onClick={() => onRemove(diner.id)}
+      >
+        <X />
+      </Button>
+    </div>
+  )
 }
 
 export function DinerManager({ diners, onAdd, onRename, onRemove }: Props) {
@@ -32,26 +85,7 @@ export function DinerManager({ diners, onAdd, onRename, onRemove }: Props) {
       <CardContent className="flex flex-col gap-3">
         <div className="flex flex-wrap gap-2">
           {diners.map((d) => (
-            <div
-              key={d.id}
-              className="bg-muted/60 flex items-center gap-1 rounded-md border pl-2"
-            >
-              <Input
-                aria-label="Diner name"
-                value={d.name}
-                onChange={(e) => onRename(d.id, e.target.value)}
-                className="h-8 w-32 border-0 bg-transparent px-1 shadow-none focus-visible:ring-0"
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-7 text-muted-foreground hover:text-destructive"
-                aria-label={`Remove ${d.name}`}
-                onClick={() => onRemove(d.id)}
-              >
-                <X />
-              </Button>
-            </div>
+            <DinerChip key={d.id} diner={d} onRename={onRename} onRemove={onRemove} />
           ))}
         </div>
 
